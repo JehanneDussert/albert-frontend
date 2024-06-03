@@ -1,5 +1,4 @@
-import { ArchiveType, type RootState } from '@types'
-import Separator from 'components/Global/Separator'
+import type { RootState } from '@types'
 import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { GlobalRowContainer } from '../Global/GlobalRowContainer'
@@ -21,7 +20,7 @@ export function MeetingCurrentResponse() {
       <h5 ref={ref} className="fr-mt-5w fr-mb-1w">
         {`Votre question ${user.history.length ? 'complémentaire' : ''}`}
       </h5>
-      <div className="min-h-12 fr-mb-2w fr-background-alt--blue-france flex items-center fr-p-2w ">
+      <div className="fr-mb-2w fr-background-alt--blue-france fr-p-2w flex min-h-12 items-center">
         <p>{user.question.query}</p>
       </div>
 

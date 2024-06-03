@@ -56,6 +56,7 @@ build:front:dinum:
       --build-arg VITE_ENVIRONMENT_NAME=${CI_ENVIRONMENT_NAME} \
       --build-arg VITE_MODEL_NAME=${MODEL_NAME} \
       --build-arg VITE_MODEL_MODE=${MODEL_MODE} \
+      --build-arg VITE_MODEL_TEMPERATURE=${MODEL_TEMPERATURE} \
       --build-arg VITE_MATOMO_URL=${MATOMO_URL} \
       --tag ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH} .
       docker push ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
@@ -77,9 +78,9 @@ deploy:front:dinum:
     - |
       ssh -i $CI_DEPLOY_USER_SSH_PRIVATE_KEY -o StrictHostKeyChecking=no ${CI_DEPLOY_USER}@${CI_DEPLOY_HOST} "
       docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      docker container rm -f ${CI_ENVIRONMENT_NAME}-front || true
+      docker container rm -f albert-front || true
       docker image rm ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH} || true
-      docker run --restart always --detach --publish 4174:4173 --name ${CI_ENVIRONMENT_NAME}-front ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
+      docker run --restart always --detach --publish 4174:4173 --name albert-front ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
       "
 
 ############# FRANCE SERVICES ##############
@@ -103,6 +104,7 @@ build:front:france services:
       --build-arg VITE_ENVIRONMENT_NAME=${CI_ENVIRONMENT_NAME} \
       --build-arg VITE_MODEL_NAME=${MODEL_NAME} \
       --build-arg VITE_MODEL_MODE=${MODEL_MODE} \
+      --build-arg VITE_MODEL_TEMPERATURE=${MODEL_TEMPERATURE} \
       --build-arg VITE_MATOMO_URL=${MATOMO_URL} \
       --tag ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH} .
       docker push ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
@@ -124,7 +126,7 @@ deploy:front:france services:
     - |
       ssh -i $CI_DEPLOY_USER_SSH_PRIVATE_KEY -o StrictHostKeyChecking=no ${CI_DEPLOY_USER}@${CI_DEPLOY_HOST} "
       docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-      docker container rm -f ${CI_ENVIRONMENT_NAME}-front || true
+      docker container rm -f albert-front || true
       docker image rm ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH} || true
-      docker run --restart always --detach --publish 4174:4173 --name ${CI_ENVIRONMENT_NAME}-front ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
+      docker run --restart always --detach --publish 4174:4173 --name albert-front ${CI_REGISTRY_IMAGE}/front/${CI_ENVIRONMENT_NAME}:${CI_FRONT_IMAGE_TAG}-${CI_COMMIT_BRANCH}
       "

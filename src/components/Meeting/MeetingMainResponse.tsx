@@ -6,9 +6,7 @@ import { emitCloseStream } from 'utils/eventsEmitter'
 import { generateStream } from 'utils/hooks'
 import { addContextToQuestion } from 'utils/setData'
 import { GlobalColContainer } from '../Global/GlobalColContainer'
-import { GlobalSecondaryTitle } from '../Global/GlobalSecondaryTitle'
-import { DisplaySourceCards } from './MeetingOutputs'
-import { MeetingQR } from './MeetingQR'
+import { MeetingRelatedQuestions } from './MeetingRelatedQuestions'
 import { MeetingStream } from './MeetingStream'
 import { MeetingTags } from './MeetingTags'
 import { ThemesAndAdminsInput } from './ThemesAndAdminsInput'
@@ -18,29 +16,25 @@ import { ThemesAndAdminsInput } from './ThemesAndAdminsInput'
 
 		**	MeetingStream: display stream & chunks from GET /indexes chunks used to generate response
 
-		**	MeetingQR: set related questions cards from sheets informations
+		**	MeetingRelatedQuestions: set related questions cards from sheets informations
 
  *****************************************************************************************************/
 
 export function MeetingMainResponse() {
   const [question, setQuestion] = useState('')
 
-  const user = useSelector((state: RootState) => state.user)
   return (
     <>
-      <DisplaySourceCards chunks={user.chunks} />
       <GlobalColContainer extraClass="fr-mt-5w">
         <MeetingStream />
-
+        <MeetingRelatedQuestions setQuestion={setQuestion} />
         <NewQuestionInput questionInput={question} setQuestionInput={setQuestion} />
-
-        <MeetingQR setQuestion={setQuestion} />
       </GlobalColContainer>
     </>
   )
 }
 
-export function NewQuestionInput({
+function NewQuestionInput({
   questionInput,
   setQuestionInput,
 }: {
@@ -106,28 +100,19 @@ export function NewQuestionInput({
   }
 
   return (
-    <div>
-      <div className=" w-full ">
-        <GlobalSecondaryTitle extraClass="fr-mt-4w">
-          Poser une question complémentaire
-        </GlobalSecondaryTitle>
-        <p className="fr-mb-3v text-xs">
-          Vous pouvez affiner la réponse proposée par Albert en posant une nouvelle
-          question relative à la situation de l’usager. Albert utilisera les échanges
-          précédents pour formuler une nouvelle réponse.
-        </p>
-        <textarea
-          style={{ minHeight: '10px', overflow: 'hidden' }}
-          placeholder="Poser une nouvelle question"
-          rows={1}
-          onChange={handleChange}
-          value={questionInput}
-          onKeyDown={handleKeyDown}
-          className="fr-input justify-end"
-          id="textarea"
-          name="textarea"
-        ></textarea>
-      </div>
+    <div className="fr-mt-2w fr-pb-2w  sticky right-0 bottom-0 left-0 z-10 bg-white">
+      <textarea
+        style={{ minHeight: '10px', overflow: 'hidden' }}
+        placeholder="Poser une nouvelle question"
+        rows={1}
+        onChange={handleChange}
+        value={questionInput}
+        onKeyDown={handleKeyDown}
+        className="fr-input justify-end"
+        id="textarea"
+        name="textarea"
+      ></textarea>
+
       {isAdditionalInputOpened && (
         <NewQuestionMeetingAdditionalInput context={context} setContext={setContext} />
       )}
@@ -136,11 +121,11 @@ export function NewQuestionInput({
           onClick={() => setIsAdditionalInputOpened(!isAdditionalInputOpened)}
           disabled={stream.isStreaming}
           className="fr-btn"
-          title="Rechercher"
+          title="Recherche avancée"
           iconId={
             isAdditionalInputOpened ? 'fr-icon-arrow-up-s-line' : 'fr-icon-add-line'
           }
-        ></Button>
+        />
         <Button
           onClick={handleSubmit}
           disabled={questionInput === '' || stream.isStreaming}
@@ -151,11 +136,16 @@ export function NewQuestionInput({
           Rechercher
         </Button>
       </div>
+      <p className="fr-my-3v text-xs">
+        Vous pouvez affiner la réponse proposée par Albert en posant une nouvelle question
+        relative à la situation de l’usager. Albert utilisera les échanges précédents pour
+        formuler une nouvelle réponse.
+      </p>
     </div>
   )
 }
 
-export function NewQuestionMeetingAdditionalInput({
+function NewQuestionMeetingAdditionalInput({
   context,
   setContext,
 }: {
@@ -200,7 +190,7 @@ export function NewQuestionMeetingAdditionalInput({
   )
 }
 
-export const inputFields = [
+const inputFields = [
   {
     label: 'Thèmes associés',
     name: 'themes',

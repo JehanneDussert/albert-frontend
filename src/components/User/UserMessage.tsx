@@ -8,7 +8,7 @@ import { useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 /*
- **
+ ** The user input
  */
 export function UserMessage({ setGenerate, questionInput, setQuestionInput }) {
   const stream = useSelector((state: RootState) => state.stream)
@@ -24,7 +24,6 @@ export function UserMessage({ setGenerate, questionInput, setQuestionInput }) {
 
   const handleClick = async () => {
     if (stream.historyStream.length) {
-      console.log('dispatch sheets', user.sheets)
       dispatch({
         type: 'SET_MESSAGES',
         nextMessage: {
@@ -56,7 +55,7 @@ export function UserMessage({ setGenerate, questionInput, setQuestionInput }) {
     dispatch({
       type: 'SET_USER_QUERY',
       nextUserQuery: questionInput,
-      nextChatId: chatId, // Use the updated chatId here
+      nextChatId: chatId,
     })
 
     dispatch({ type: 'RESET_STREAM_HISTORY' })
@@ -99,7 +98,7 @@ export function UserMessage({ setGenerate, questionInput, setQuestionInput }) {
   }
 
   return (
-    <div className="fr-background-default--grey fr-py-1w md:fr-py-3w sticky right-0 bottom-0 left-0 z-10 w-full md:w-[992px]">
+    <div className="fr-background-default--grey fr-pb-1w md:fr-pb-3w sticky right-0 bottom-0 left-0 z-10 w-full md:w-[992px]">
       <div className="fr-grid-row fr-grid-row--center">
         <div className="fr-col-10">
           <textarea
@@ -112,29 +111,19 @@ export function UserMessage({ setGenerate, questionInput, setQuestionInput }) {
             className="fr-input justify-end"
             id="textarea"
             name="textarea"
-          ></textarea>
+          />
           <div className="flex justify-end">
             <Button
               onClick={handleClick}
               disabled={questionInput.trim() === '' || stream.isStreaming}
               className="fr-btn align-end"
               title="Rechercher"
-              /* iconId="fr-icon-search-line" */
             >
-              <span className="fr-icon-search-line fr-icon--sm fr-mr-md-1w"></span>
+              <span className="fr-icon-search-line fr-icon--sm fr-mr-md-1w" />
               {window.innerWidth > 992 ? 'Rechercher' : null}
             </Button>
           </div>
         </div>
-        {/*       <SearchBar
-          label="Poser votre question"
-          className="w-5/6"
-          onButtonClick={handleClick}
-          //@ts-expect-error
-          onChange={handleChange}
-          renderInput={handleRenderInput}
-          value={questionInput}
-        /> */}
       </div>
     </div>
   )

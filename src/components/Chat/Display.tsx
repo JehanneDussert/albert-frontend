@@ -5,20 +5,16 @@ import { ChatFollowUp } from './ChatFollowUp'
 import { DisplayArrayMessages } from './DisplayArrayMessages'
 import { DisplaySingleMessage } from './DisplaySingleMessage'
 
-/*
- *
- */
 export function Display({
   messages,
   archive,
 }: { messages: Message[]; archive: boolean }) {
-  const endOfMessagesRef = useRef(null)
-  const user = useSelector((state: RootState) => state.user)
+  const endOfMessagesRef = useRef(null) // We use this ref to scroll to the end of the messages
   const stream = useSelector((state: RootState) => state.stream)
+
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, stream])
-  console.log('messages', messages)
   return (
     <div>
       <div className="w-full md:w-[992px]" id="chat" ref={endOfMessagesRef}>

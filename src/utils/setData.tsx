@@ -2,6 +2,7 @@ import type { Question, Sheet, Tile } from '@types'
 import { useFetch } from './hooks'
 
 const modelName: string = import.meta.env.VITE_MODEL_NAME as string
+const modelTemperature: number = 70 // import.meta.env.VITE_MODEL_TEMPERATURE as number
 
 /*
  * isEventSource is true when fetching for a stream
@@ -48,27 +49,6 @@ export const setUserQuestion = (question) => {
     sources: question.sources,
     must_not_sids: question.must_not_sids,
     with_history: true,
-  }
-
-  return data
-}
-
-export const setQuestionFromRegeneration = (
-  mode: string,
-  text,
-  limit: number,
-  must_not_sids: string[]
-) => {
-  const data = {
-    model_name: modelName,
-    mode: mode,
-    query: text,
-    limit: limit,
-    context: '',
-    institution: '',
-    links: '',
-    temperature: 20,
-    must_not_sids: must_not_sids,
   }
 
   return data
@@ -175,7 +155,7 @@ export const getIndexes = async (
 /*
  * Get the sheets from the stream
  */
-export const setIndexesData = (
+const setIndexesData = (
   data: {
     question: string
     must_not_sids: string[]
@@ -191,7 +171,7 @@ export const setIndexesData = (
   getIndexes(data, dispatch, 'sheets', 10, streamId, indexesUrl)
 }
 
-export const setTilesFromSheets = (sheets: Sheet[], setTiles: (any) => void) => {
+const setTilesFromSheets = (sheets: Sheet[], setTiles: (any) => void) => {
   setTiles([])
   if (!sheets || !sheets.length) return
 

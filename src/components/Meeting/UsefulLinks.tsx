@@ -12,7 +12,7 @@ export const UsefulLinks = ({
 
   return (
     <div className={`${extraClass} h-full`}>
-      <h6 className={' fr-pb-2w '}>Liens pratiques</h6>
+      <h6 className={'fr-pb-2w '}>Liens pratiques</h6>
 
       {tiles.map((tile, key) => {
         return (
@@ -52,7 +52,7 @@ function SmallHorizontalTile({ tileProps }: { tileProps: TileType }) {
 /**
  * Helper function to generate tiles props from webservices
  */
-export const setUsefulLinksTilesProps = (webservices: WebService[]) => {
+const setUsefulLinksTilesProps = (webservices: WebService[]) => {
   const tiles: TileType[] = []
   webservices.map((webservice) => {
     const url = webservice.url

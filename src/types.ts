@@ -9,7 +9,8 @@ export type AppDispatch = typeof store.dispatch
 
 const modelName: string = import.meta.env.VITE_MODEL_NAME as string
 const modelMode: string = import.meta.env.VITE_MODEL_MODE as string
-/****************************************************************
+const modelTemperature: number = 70 //import.meta.env.VITE_MODEL_TEMPERATURE as number
+/****************************************************************;
  *                             USER                             *
  *            All the types used in the redux store             *
  *                 to track the user's question                 *
@@ -66,7 +67,7 @@ export const InitialQuestion: Question = {
   context: undefined,
   institution: undefined,
   links: undefined,
-  temperature: 20,
+  temperature: modelTemperature,
   sources: ['service-public', 'travail-emploi'],
   should_sids: [],
   must_not_sids: [],
@@ -162,7 +163,7 @@ export type ArchiveType = {
  * it is used to track the state of the response
  */
 export type Stream = {
-  response: string[]
+  response: string
   historyStream: string[]
   isStreaming: boolean
   activeTab: number // deprecated

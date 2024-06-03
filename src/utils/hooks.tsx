@@ -1,12 +1,12 @@
-import { getChunksUrl, streamUrl } from '@api'
+import { streamUrl } from '@api'
 import { EventSourcePolyfill } from 'event-source-polyfill'
-import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux'
 import type { AppDispatch, Question, RootState } from '../types'
 import { onCloseStream } from './eventsEmitter'
 import { setHeaders, setUserQuestion } from './setData'
 
 export const useAppDispatch: () => AppDispatch = useDispatch
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export const useFetch = async (url: string, method: string, props): Promise<any> => {
   const { data, headers } = props
@@ -34,7 +34,7 @@ export const useFetch = async (url: string, method: string, props): Promise<any>
 function handleStreamMessage(e, dispatch, stream_chat, id: number) {
   try {
     const jsonData = JSON.parse(e.data)
-    if (jsonData == '[DONE]') {
+    if (jsonData === '[DONE]') {
       stream_chat.close()
       dispatch({ type: 'SET_STREAM_ID', nextStreamId: 0 })
       return dispatch({ type: 'STOP_AGENT_STREAM' })
@@ -58,7 +58,7 @@ function handleStreamError(e, stream_chat) {
 /*
  **	Manage stream
  */
-export const useStream = async (dispatch, id: number, isChat: boolean) => {
+const useStream = async (dispatch, id: number, isChat: boolean) => {
   const stream_chat = new EventSourcePolyfill(`${streamUrl}/${id}/start`, {
     headers: setHeaders(true),
     withCredentials: true,
