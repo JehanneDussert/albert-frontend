@@ -1,14 +1,19 @@
-import { meetingAppointmentTitle } from '@constants/meeting'
-import type { RootState, UserHistory, WebService } from '@types'
+import {
+  InitialQuestion,
+  type Question,
+  type RootState,
+  type UserHistory,
+  type WebService,
+} from '@types'
 import { CurrQuestionContext } from '@utils/context/questionContext'
 import { rmContextFromQuestion } from '@utils/setData'
 import { GlobalColContainer } from 'components/Global/GlobalColContainer'
+import { GlobalParagraph } from 'components/Global/GlobalParagraph'
 import { GlobalRowContainer } from 'components/Global/GlobalRowContainer'
 import { OneThirdScreenWidth } from 'components/Global/OneThirdScreenWidth'
 import Separator from 'components/Global/Separator'
-import { TextWithSources } from 'components/Sources/TextWithSources'
-import { useContext, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { MeetingCurrentResponse } from './MeetingCurrentResponse'
 import { UsefulLinks } from './UsefulLinks'
 
@@ -22,20 +27,30 @@ import { UsefulLinks } from './UsefulLinks'
   *****************************************************************************************************/
 
 export function MeetingOutputs() {
-  const { currQuestion } = useContext(CurrQuestionContext)
   const user = useSelector((state: RootState) => state.user)
+  const [currQuestion, setCurrQuestion] = useState(InitialQuestion)
+  const dispatch = useDispatch()
   const [query, setQuery] = useState<string>(currQuestion.query)
+  const updateCurrQuestion = (newQuestion: Question) => {
+    setCurrQuestion(newQuestion)
+  }
 
   useEffect(() => {
-    rmContextFromQuestion(query, setQuery)
+    if (user.chatId === 0) return
+    if (query !== '') rmContextFromQuestion(query, setQuery)
   }, [query])
 
+  useEffect(() => {
+    return () => {
+      dispatch({ type: 'RESET_USER' })
+    }
+  }, [])
   return (
-    <>
-      <h2 className="fr-my-2w fr-mb-5w">{meetingAppointmentTitle}</h2>
-      <History history={user.history} />
+    <CurrQuestionContext.Provider value={{ currQuestion, updateCurrQuestion }}>
+      <h2 className="fr-my-2w fr-mb-5w">Poser une question à Albert</h2>
+      {user.history.length > 0 && <History history={user.history} />}
       <MeetingCurrentResponse />
-    </>
+    </CurrQuestionContext.Provider>
   )
 }
 
@@ -50,6 +65,7 @@ export function History({ history }: { history: UserHistory[] }) {
         <div className="fr-mb-1w" key={h.query}>
           <h3 className="fr-background-alt--blue-france">
             <button
+              type="button"
               className="fr-accordion__btn fr-text-default--grey"
               aria-expanded="false"
               aria-controls={`history-${index}`}
@@ -88,11 +104,11 @@ export function DisplayResponse({
     <GlobalRowContainer extraClass="fr-mt-5w">
       <GlobalColContainer>
         <div key={response}>
-          <h3>Réponse proposée par Albert</h3>
-          <TextWithSources text={response} />
+          <h3>Réponse proposée par </h3>
+          <GlobalParagraph>{response}</GlobalParagraph>
         </div>
       </GlobalColContainer>
-      {webservices && webservices.length > 0 && (
+      {webservices?.length && (
         <OneThirdScreenWidth extraClass="">
           <GlobalColContainer>
             <UsefulLinks webservices={webservices} />
