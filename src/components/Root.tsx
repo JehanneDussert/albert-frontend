@@ -7,6 +7,7 @@ import { quickAccessItemsFunc } from '@constants/header'
 import { navFunc } from '@constants/router'
 import { InitialUserAuth, type UserAuth } from '@utils/auth'
 import { isMFSContext } from '@utils/context/isMFSContext'
+import { useAppDispatch } from '@utils/hooks'
 import { checkConnexion } from '@utils/localStorage'
 import { useContext, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
@@ -18,7 +19,6 @@ import { History } from '../pages/History'
 import { Home } from '../pages/Home'
 import { Login } from '../pages/Login'
 import { Meeting } from '../pages/Meeting'
-import { NewHome } from '../pages/NewHome'
 import { NewPassword } from '../pages/NewPassword'
 import { ResetPassword } from '../pages/ResetPassword'
 import { Signup } from '../pages/Signup'
@@ -28,23 +28,20 @@ export const Root = () => {
   const navigationData = navFunc()
   const [userAuth, setUserAuth] = useState<UserAuth>(InitialUserAuth)
   const [authFailed, setAuthFailed] = useState(false)
+  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(true)
   const isMFS = useContext(isMFSContext)
   useEffect(() => {
     checkConnexion(setUserAuth, userUrl).finally(() => setIsLoading(false))
-  }, [])
+  }, [dispatch])
   if (isLoading) {
-    return null
+    return <div></div>
   }
 
   return (
-    <div className="h-screen w-screen flex-col justify-between" id="screen">
+    <div className="h-screen w-screen flex-col justify-between  " id="screen">
       <Header
         brandTop="DINUM / Etalab"
-        homeLinkProps={{
-          href: '/home',
-          title: 'Accueil - Albert',
-        }}
         serviceTitle={
           <>
             ALBERT {isMFS ? 'France services' : 'Chat'}{' '}
@@ -56,7 +53,9 @@ export const Root = () => {
         serviceTagline={
           isMFS ? 'Aide à l’accompagnement des usagers France services' : ''
         }
+        homeLinkProps={{ title: 'Albert', href: '/' }}
         navigation={userAuth.isLogin && navigationData}
+        // @ts-expect-error TS(2322) FIXME: Type '({ iconId: string; linkProps: { style: { poi... Remove this comment to see the full error message
         quickAccessItems={
           userAuth.isLogin ? quickAccessItemsFunc(userAuth, setUserAuth, signoutUrl) : []
         }
@@ -77,7 +76,10 @@ export const Root = () => {
           }
         />
         {isMFS ? (
-          <Route path="/FAQ" element=<FAQ /> />
+          <Route
+            path="/FAQ"
+            element={!userAuth.isLogin ? <Navigate to="/login" /> : <FAQ />}
+          />
         ) : (
           <Route
             path={'/FAQ'}
@@ -111,7 +113,9 @@ export const Root = () => {
         {!isMFS ? (
           <Route
             path="/chat"
-            element={!userAuth.isLogin ? <Navigate to="/login" /> : <Chatbot />}
+            element={
+              !userAuth.isLogin ? <Navigate to="/login" /> : <Chatbot archive={false} />
+            }
           />
         ) : (
           <Route
@@ -172,7 +176,7 @@ export const Root = () => {
         <Route path="*" element={<Error404 />} />
       </Routes>
 
-      {location.pathname !== '/chat' && (
+      {location.pathname != '/chat' && (
         <Footer
           bottomItems={[headerFooterDisplayItem]}
           accessibility="partially compliant"

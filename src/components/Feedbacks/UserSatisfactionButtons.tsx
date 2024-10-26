@@ -1,6 +1,6 @@
-import { primaryButtons, secondaryButtons } from '@constants/feedback'
-import type { Feedback as FeedbackType } from '@types'
+import { InitialFeedback, type Feedback as FeedbackType } from '@types'
 import { GlobalRowContainer } from '../Global/GlobalRowContainer'
+import { fr } from '@codegouvfr/react-dsfr'
 
 /**
  * These are the good or bad buttons that the user can click to give feedback
@@ -14,14 +14,14 @@ export function UserSatisfactionButtons({
   feedback: FeedbackType
   setFeedback: (feedback: FeedbackType) => void
 }) {
-  const buttons = isFirst ? primaryButtons : secondaryButtons
-
   const handleClick = (isGood: number) => {
-    if (isGood === feedback.isGood) return
-    setFeedback({
-      ...feedback,
-      isGood: isGood,
-    })
+    if (isGood === feedback.isGood) setFeedback(InitialFeedback)
+    else {
+      setFeedback({
+        ...feedback,
+        isGood: isGood,
+      })
+    }
   }
   return (
     <GlobalRowContainer>
@@ -31,7 +31,7 @@ export function UserSatisfactionButtons({
         onClick={() => handleClick(0)}
         className={`user-feedback-buttons ${
           feedback.isGood || feedback.isGood === undefined
-            ? 'bg-white  fr-text-action-high--blue-france'
+            ? 'fr-background-default--grey fr-text-action-high--blue-france'
             : 'fr-background-action-high--blue-france text-white'
         }`}
         disabled={feedback.isConfirmed}
@@ -57,7 +57,7 @@ export function UserSatisfactionButtons({
         className={`user-feedback-buttons  ${
           feedback.isGood
             ? 'fr-background-action-high--blue-france text-white'
-            : 'bg-white  fr-text-action-high--blue-france'
+            : 'fr-background-default--grey  fr-text-action-high--blue-france'
         }`}
         disabled={feedback.isConfirmed}
       >

@@ -1,10 +1,5 @@
-# Albert Frontend
+# Albert France services
 *[English version below](#english-version)*
-> ⚠️ DISCLAIMER :
-> Ce projet est devenu open source très récemment, voici quelques mises en garde :
-> - Le code peut contenir des composants et du code qui ne vous sont pas utiles et qui sont utilisés spécifiquement pour France Services, le projet sera scindé dans le futur.
-> - L'accessibilité du projet n'est pas totale selon les [critères du RGAA](https://accessibilite.numerique.gouv.fr/)
-> - La documentation n'est pas complète
 
 ## 🎯 Objectif général
 
@@ -59,15 +54,15 @@ Nous utilisons [ViteJS](https://vitejs.dev/) pour construire le projet donc chaq
 
 **VITE_API_URL** -- url pour les requêtes de l'api.  
 **VITE_MATOMO_URL** -- l'url de l'instance de matomo pour l'analyse (optionnel)  
-**VITE_ENVIRONMENT_NAME** -- une varialbe optionnelle utilisée pour afficher des fonctionnalités spécifiques pour les usagers de France Services.  
+**VITE_ENVIRONMENT_NAME** -- une variable optionnelle utilisée pour afficher des fonctionnalités spécifiques pour les usagers de France Services.  
 
 **VITE_MODEL_NAME** -- le modèle à utiliser pour les requêtes, vous pouvez trouver une liste ici [ici](https://huggingface.co/AgentPublic)  
-**VITE_MODEL_MODE** -- chaque modèle possède plusieurs modes lui permettant de répondre différemment: rag, rag-gt
-**VITE_MODEL_TEMPERATURE** -- la température utilisée par le modèle pour générer la réponse. Entre 1 et 100
+**VITE_MODEL_MODE** -- chaque modèle possède plusieurs modes lui permettant de répondre différemment: rag, rag-gt  
+**VITE_MODEL_TEMPERATURE** -- la température utilisée par le modèle pour générer la réponse. Entre 1 et 100  
 
  ## API 
 
-[Voici tous les points d'accès utilisés par Albert](https://albert.etalab.gouv.fr/api/v2/docs#/)
+[Voici tous les points d'accès utilisés par Albert](https://albert.etalab.gouv.fr/api/v2/docs#/)  
 Note : La documentation des endpoints n'est pas encore complète.
 
 Albert front utilise [tanstack-query](https://tanstack.com/query/latest/docs/framework/react/overview) (react-query) pour interagir avec le backend.  
@@ -80,7 +75,9 @@ Tous les points d'entrée de l'api sont référencés dans [src/api/routes.ts](s
 - [x] ``stream`` : Gère la réponse du bot en cours, il est aussi utilisé pour vérifier si le bot est en streaming ou non.
 - [x] ``user`` : Tous les messages utilisateur/agent de la conversation, ainsi que les sources du message actuel. 
 
+## 🛠️ Configuration
 
+### Tool & server development
 
 ---
 
@@ -89,11 +86,6 @@ Tous les points d'entrée de l'api sont référencés dans [src/api/routes.ts](s
 <details>
   <summary>English version</summary>
 
-> ⚠️ DISCLAIMER:
-> This project went open source very recently, here are some caveats:
-> - The code might contain components and code that are of no use to you and that are used specifically for France Services, the project will be splitted in the future.
-> - The Accessibility of the project is not total according to the [RGAA criterias](https://accessibilite.numerique.gouv.fr/)
-> - The documentation is not complete
 
 ## 🎯 General objective
 

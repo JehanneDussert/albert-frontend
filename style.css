@@ -13,20 +13,6 @@
     }
   }
 
-@keyframes slideInLeft {
-  from {
-    transform: translate3d(-100%, 0, 0);
-    visibility: visible;
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.slideInLeft {
-  animation-name: slideInLeft;
-}
 
 @media(max-width: 992px) {
 .hide-on-smallscreen {display: none;}
@@ -433,6 +419,11 @@ video {
   --tw-text-opacity: 1;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.user-feedback-buttons:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
 
 /* AGENT */
@@ -888,4 +879,20 @@ video {
 
 .no-underline-link {
   text-decoration: none !important;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 0.5s forwards;
 }

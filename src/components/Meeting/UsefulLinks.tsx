@@ -11,7 +11,7 @@ export const UsefulLinks = ({
     !webservices || !webservices.length ? [] : setUsefulLinksTilesProps(webservices)
 
   return (
-    <div className={`${extraClass} h-full`}>
+    <div className={`${extraClass} `}>
       <h6 className={'fr-pb-2w '}>Liens pratiques</h6>
 
       {tiles.map((tile, key) => {
@@ -28,21 +28,16 @@ export const UsefulLinks = ({
 function SmallHorizontalTile({ tileProps }: { tileProps: TileType }) {
   return (
     <div
-      className="fr-tile fr-tile--sm fr-tile--horizontal fr-enlarge-link  hover:bg-[#f6f6f6]"
-      id="tile-6661"
+      className="fr-tile fr-tile--sm fr-tile--horizontal fr-enlarge-link  "
+      id="tile-6609"
     >
       <div className="fr-tile__body">
         <div className="fr-tile__content">
           <h3 className="fr-tile__title">
-            <a
-              href={tileProps.linkProps.href}
-              style={{ backgroundImage: 'none', textDecoration: 'none' }}
-            >
+            <a target="_blank" href={tileProps.linkProps.href}>
               {tileProps.title}
             </a>
           </h3>
-          <p className="fr-tile__detail">{tileProps.desc.key}</p>
-          <div className="fr-tile__start" />
         </div>
       </div>
     </div>
@@ -63,13 +58,13 @@ const setUsefulLinksTilesProps = (webservices: WebService[]) => {
     domain = domain.replace(/^entreprendre\./, '')
 
     const newTile = {
-      linkProps: { href: webservice.url },
+      linkProps: { href: webservice.url, target: '_blank' },
       title: (
         <>
           <p className="fr-badge fr-badge--sm fr-badge--purple-glycine fr-mb-1v">
             {webservice.type}
           </p>
-          <p>{webservice.institution}</p>
+          <p>{webservice.title}</p>
         </>
       ),
       desc: <>{domain}</>,

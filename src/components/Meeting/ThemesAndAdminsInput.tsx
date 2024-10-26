@@ -1,7 +1,7 @@
+import React, { useMemo, useState } from 'react'
 import { useGetInstitutions } from '@api'
-import Input from '@codegouvfr/react-dsfr/Input'
+import { Input } from '@codegouvfr/react-dsfr/Input'
 import Fuse from 'fuse.js'
-import { useMemo, useState } from 'react'
 
 const options = {
   includeScore: true,
@@ -10,13 +10,17 @@ const options = {
   keys: ['name'],
 }
 
-/*
- * Additional inputs used to search for administrations or themes tags
- */
-export function ThemesAndAdminsInput({ field, onTagSelect, themes, administrations }) {
+export function ThemesAndAdminsInput({
+  field,
+  onTagSelect,
+  themes,
+  administrations,
+  showError,
+}) {
   const [searchResults, setSearchResults] = useState([])
   const [selectedValue, setSelectedValue] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(-1)
+
   const { data: institutions, error: institutionsError } = useGetInstitutions()
 
   const fuse = useMemo(() => {
@@ -82,6 +86,9 @@ export function ThemesAndAdminsInput({ field, onTagSelect, themes, administratio
     )
   }
 
+  const isFieldEmpty =
+    field.name === 'themes' ? themes.length === 0 : administrations.length === 0
+
   return (
     <div>
       <Input
@@ -94,6 +101,10 @@ export function ThemesAndAdminsInput({ field, onTagSelect, themes, administratio
           name: field.name,
           tabIndex: 0,
         }}
+        state={showError && isFieldEmpty ? 'error' : 'default'}
+        stateRelatedMessage={
+          showError && isFieldEmpty ? `Le champ ${field.label} est obligatoire` : ''
+        }
       />
       {field.name === 'administrations' && (
         <div tabIndex={-1} className="fr-mb-2v">
@@ -109,7 +120,6 @@ export function ThemesAndAdminsInput({ field, onTagSelect, themes, administratio
                 onClick={() => handleSelect(result)}
                 onKeyUp={(e) => handleKeyUp(e, result)}
                 tabIndex={0}
-                role="button"
               >
                 <p className="fr-ml-3w fr-mt-1w fr-mb-1w">{result}</p>
               </div>

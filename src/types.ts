@@ -1,4 +1,5 @@
 import type { store } from './utils/reducer/reducer'
+import question from '@artwork/pictograms/albert/question.png'
 
 /**
  * The type of the Redux store
@@ -9,7 +10,7 @@ export type AppDispatch = typeof store.dispatch
 
 const modelName: string = import.meta.env.VITE_MODEL_NAME as string
 const modelMode: string = import.meta.env.VITE_MODEL_MODE as string
-const modelTemperature: number = 70 //import.meta.env.VITE_MODEL_TEMPERATURE as number
+const modelTemperature: number = import.meta.env.VITE_MODEL_TEMPERATURE as number
 /****************************************************************;
  *                             USER                             *
  *            All the types used in the redux store             *
@@ -20,10 +21,8 @@ const modelTemperature: number = 70 //import.meta.env.VITE_MODEL_TEMPERATURE as 
 export interface User {
   question: Question // Question asked by user plus all the parameters required to generate a response
   messages: Message[] // Message exchanged between user & agent
-  sheets: Sheet[] // Sheets associated to the reponse from 0 to 2
-  additionalSheets: Sheet[] // suggested sheets to from 3 to 9
   chunks: Chunk[] // Chunks for the current response
-  webservices: any[] // Dans sheets webservices: liens utiles lies aux sheets
+  webservices: WebService[] // Dans sheets webservices: liens utiles lies aux sheets
   chatId: number // current chat id+
   streamId: number // current stream id
   history: UserHistory[] // history of the user's questions and the bot's responses
@@ -40,7 +39,6 @@ export type UserHistory = {
 export type Message = {
   text: string[]
   chunks: Chunk[]
-  sheets: Sheet[]
   sender: 'user' | 'agent'
 }
 
@@ -76,29 +74,6 @@ export const InitialQuestion: Question = {
 /**
  * A sheet is a source document used by the bot to generate a response
  */
-export type Sheet = {
-  hash: string
-  sid: string
-  title: string
-  url: string
-  introduction: string
-  text: string
-  context: string
-  theme: string
-  surtitre: string
-  source: string
-  related_questions: {
-    question: string
-    sid: string
-    url: string
-  }[]
-  web_services?: {
-    title: string
-    institution: string
-    url: string
-    type: string
-  }[]
-}
 
 /**
  * A chunk is a part of a sheet that has been used to generate the repsonse
@@ -113,6 +88,8 @@ export type Chunk = {
   context: string
   surtitre: string
   source: string
+  web_services: WebService[]
+  related_questions: RelatedQuestion[]
 }
 
 export type Chat = {
@@ -124,31 +101,6 @@ export type Chat = {
   userId: number | undefined
 }
 
-export type ArchiveType = {
-  chat_id: number
-  context: string
-  model_name: string
-  mode: string
-  query: string | undefined
-  limit: number
-  institution: any
-  links: any
-  temperature: number
-  sources: string[]
-  should_sids: string[]
-  must_not_sids: string[]
-  response: string
-  rag_sources: string[]
-  id: number
-  is_streaming: boolean
-  user_id: number
-  search_sids: string[]
-  sheets: Sheet[]
-  additionalSheets: Sheet[]
-  webservices: []
-  chunks: Chunk[]
-}
-
 /**
  * This object contains the result sent by the bot
  * it is used to track the state of the response
@@ -158,6 +110,29 @@ export type Stream = {
   historyStream: string[]
   isStreaming: boolean
   activeTab: number // deprecated
+}
+
+/****************************************************************
+ *                            STREAM                            *
+ ****************************************************************/
+export type ChatCompletion = {
+  choices: Array<{
+    finish_reason: string
+    index: number
+    delta: {
+      content: string
+    }
+    logprobs: null | unknown // If logprobs is expected to be an object or null, replace `unknown` with the appropriate type
+  }>
+  created: number
+  id: string
+  model: string
+  object: string
+  usage: {
+    completion_tokens: number
+    prompt_tokens: number
+    total_tokens: number
+  }
 }
 
 /****************************************************************
@@ -205,6 +180,12 @@ export type WebService = {
   institution: string
   url: string
   type: string
+}
+
+export type RelatedQuestion = {
+  question: string
+  sid: string
+  url: string
 }
 
 /**

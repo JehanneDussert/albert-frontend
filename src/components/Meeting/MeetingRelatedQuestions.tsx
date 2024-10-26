@@ -7,32 +7,28 @@ import { useSelector } from 'react-redux'
 	COMPONENTS:
 
 		Frequently asked question suggestions
-		For now we get the related questions from the sheets
+		We get the related questions from the chunks
  *****************************************************************************************/
 export function MeetingRelatedQuestions({
   setQuestion,
 }: {
-  setQuestion: React.Dispatch<React.SetStateAction<string>>
+  setQuestion: (question: string) => void
 }) {
-  const sheets = useSelector((state: RootState) => state.user.sheets)
+  const chunks = useSelector((state: RootState) => state.user.chunks)
+  const isStreaming = useSelector((state: RootState) => state.stream.isStreaming)
   const [relatedQuestions, setRelatedQuestions] = useState([])
-  const stream = useSelector((state: RootState) => state.stream)
-  const ref = createRef<HTMLDivElement>()
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth' })
-    }
-  }, [ref.current, stream.response])
-  useEffect(() => {
-    if (!sheets || !sheets.length) return
+    if (!chunks || !chunks.length) return
 
     let updatedQuestions = []
     setRelatedQuestions([])
+    let count = 0
+    for (const chunk of chunks) {
+      if (count >= 3) break
 
-    for (const sheet of sheets) {
-      if (sheet.related_questions) {
-        for (const qr of sheet.related_questions) {
+      if (chunk.related_questions) {
+        for (const qr of chunk.related_questions) {
           const objectExists = updatedQuestions.some((obj) => obj.sid === qr.sid)
 
           if (!objectExists) {
@@ -43,13 +39,15 @@ export function MeetingRelatedQuestions({
           }
         }
       }
+      count++
     }
-
     setRelatedQuestions(updatedQuestions)
-  }, [sheets])
+  }, [chunks])
+
+  if (isStreaming) return null
 
   return (
-    <>
+    <div className="fr-mb-w fr-mb-4w mt-auto">
       {relatedQuestions.length !== 0 && (
         <p className="fr-pt-3w fr-mb-2w flex md:flex-col">
           Des questions posées fréquemment pour des situations similaires :
@@ -61,17 +59,16 @@ export function MeetingRelatedQuestions({
             type="button"
             className="fr-mb-1w w-full"
             key={index}
-            onClick={() => setQuestion(rq.question)}
+            onClick={() => {
+              setQuestion(rq.question)
+            }}
           >
-            <div
-              ref={ref}
-              className="fr-px-2w fr-py-3v inline-flex h-full w-full rounded bg-[#F5F5FE]"
-            >
+            <div className="fr-px-2w fr-py-3v inline-flex h-full w-full rounded fr-background-alt--blue-france">
               {rq.question}
             </div>
           </button>
         )
       })}
-    </>
+    </div>
   )
 }

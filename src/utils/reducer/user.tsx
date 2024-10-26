@@ -1,4 +1,4 @@
-import type { Chunk, Message, Question, Sheet, User, UserHistory } from '@types'
+import type { Chunk, Message, Question, User, UserHistory } from '@types'
 
 /*****************************************************************************************************
 	
@@ -20,7 +20,7 @@ import type { Chunk, Message, Question, Sheet, User, UserHistory } from '@types'
 
 const modelName: string = import.meta.env.VITE_MODEL_NAME as string
 const modelMode: string = import.meta.env.VITE_MODEL_MODE as string
-const modelTemperature: number = 70 //import.meta.env.VITE_MODEL_TEMPERATURE as number
+const modelTemperature: number = import.meta.env.VITE_MODEL_TEMPERATURE as number
 
 const InitialQuestion: Question = {
   model_name: modelName,
@@ -39,8 +39,6 @@ const InitialQuestion: Question = {
 const InitialUser: User = {
   question: InitialQuestion,
   messages: [],
-  sheets: [],
-  additionalSheets: [],
   chunks: [],
   webservices: [],
   chatId: 0,
@@ -50,9 +48,7 @@ const InitialUser: User = {
 }
 
 type UserAction =
-  | { type: 'SET_SHEETS'; sheets: Sheet[] }
   | { type: 'SET_CHUNKS'; chunks: Chunk[] }
-  | { type: 'ADD_SHEETS'; indexToAdd: number }
   | { type: 'SET_USER_QUERY'; nextUserQuery: string; nextChatId: number }
   | { type: 'RESET_QUESTION_FIELDS' }
   | { type: 'RESET_USER' }
@@ -60,6 +56,7 @@ type UserAction =
   | { type: 'SET_STREAM_ID'; nextStreamId: number }
   | { type: 'SET_CHAT_ID'; nextChatId: number }
   | { type: 'ADD_HISTORY'; newItem: UserHistory }
+  | { type: 'ADD_HISTORY_BATCH'; items: UserHistory[] }
   | { type: 'SET_LAST_STREAM_ID'; nextLastStreamId: number }
 
 export const userReducer = (state: User = InitialUser, action: UserAction): User => {
@@ -69,54 +66,29 @@ export const userReducer = (state: User = InitialUser, action: UserAction): User
         ...state,
         lastStreamId: action.nextLastStreamId,
       }
+    case 'ADD_HISTORY_BATCH':
+      return {
+        ...state,
+        history: [...state.history, ...action.items],
+      }
     case 'ADD_HISTORY':
       return {
         ...state,
         history: [...state.history, action.newItem],
       }
-    case 'SET_SHEETS':
-      return {
-        ...state,
-        sheets: action.sheets.slice(0, 3),
-        additionalSheets: action.sheets.slice(3, 10),
-        webservices: action.sheets[0].web_services?.slice(0, 3),
+    case 'SET_CHUNKS': {
+      let webServices = []
+      for (let i = 0; i < action.chunks.length && webServices.length < 3; i++) {
+        if (action.chunks[i].web_services) {
+          webServices = webServices.concat(
+            action.chunks[i].web_services.slice(0, 3 - webServices.length),
+          )
+        }
       }
-    case 'SET_CHUNKS':
       return {
         ...state,
         chunks: action.chunks,
-      }
-    case 'ADD_SHEETS': {
-      if (!state.sheets) return state
-
-      const sheets = state.additionalSheets.filter(
-        (_, index) => action.indexToAdd === index
-      )
-      const additionalSheets = state.additionalSheets.filter(
-        (_, index) => action.indexToAdd !== index
-      )
-      const nextShouldSids = [...state.sheets.map((sheet) => sheet.sid), sheets[0].sid]
-      const nextMustNotSids = state.question.must_not_sids.filter(
-        (sid) => !nextShouldSids.includes(sid)
-      )
-
-      if (
-        JSON.stringify(nextMustNotSids) === JSON.stringify(state.question.must_not_sids)
-      )
-        return {
-          ...state,
-          sheets: [...state.sheets, ...sheets],
-          additionalSheets: additionalSheets,
-        }
-
-      return {
-        ...state,
-        sheets: [...state.sheets, ...sheets],
-        additionalSheets: additionalSheets,
-        question: {
-          ...state.question,
-          must_not_sids: nextMustNotSids,
-        },
+        webservices: webServices,
       }
     }
     case 'SET_CHAT_ID':

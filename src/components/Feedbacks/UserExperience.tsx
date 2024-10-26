@@ -1,5 +1,5 @@
 import { askingQuality, redoAskingQuality } from '@constants/feedback'
-import type { Feedback as FeedbackType, RootState } from '@types'
+import type { RootState } from '@types'
 import { useSelector } from 'react-redux'
 import { Avatar } from '../Chat/Avatar'
 import { GlobalRowContainer } from '../Global/GlobalRowContainer'
@@ -12,10 +12,7 @@ const AskingResponseQuality = ({ tabsLen }) => {
   )
 }
 
-export function UserExperience({
-  feedback,
-  setFeedback,
-}: { feedback: FeedbackType; setFeedback: (feedback: FeedbackType) => void }) {
+export function UserExperience() {
   const stream = useSelector((state: RootState) => state.stream)
   const tabsLen = stream.historyStream.length
 
@@ -31,7 +28,7 @@ export function UserExperience({
           </GlobalRowContainer>
           <div className="flex justify-center">
             <div className="w-5/6">
-              <Feedback feedback={feedback} setFeedback={setFeedback} />
+              <Feedback />
             </div>
           </div>
         </div>

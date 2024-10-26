@@ -1,4 +1,10 @@
-.env.development
+.env.staging
+.env.production
+.env.dev
+.env.local
+
+src/**/*.js
+
 ..bfg-report
 
 # Logs
